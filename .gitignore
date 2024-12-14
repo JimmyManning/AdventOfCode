@@ -1,4 +1,9 @@
+*
+!*.*
+!*/
 *.out
 *~
 *.out.*
 .DS_Store
+*.lock
+target
