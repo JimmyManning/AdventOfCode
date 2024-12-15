@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::Read;
 use std::collections::HashMap;
 fn main() -> std::io::Result<()> {
-    let mut file = File::open("puzzle.txt")?;
+    let mut file = File::open("input.txt")?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
@@ -43,7 +43,7 @@ fn main() -> std::io::Result<()> {
     }
     println!();
     let mut movefileattempt : HashMap<u32, bool> = Default::default();
-    let mut curfile = 0;
+    let mut curfile :i32 = -2;
     let mut filesize = 0;
     for mut i in (0..disk.len()).rev() {
         //if disk[i] != -1 {
@@ -52,52 +52,58 @@ fn main() -> std::io::Result<()> {
                     curfile = disk[i];
                 }
             }
-            if disk[i] != curfile && filesize != 0 && *movefileattempt.entry(disk[i-1] as u32).or_insert_with(|| false) == false {
-                *movefileattempt.entry(disk[i-1] as u32).or_insert_with(|| true) = true;
-                for mut ii in 0..disk.len() {
-                    if i == ii {
-                        i = 0;
-                        break;
-                    }
-                    if disk[ii] == -1 {
-                        let mut availsize = 0;
-                        for mut iii in ii..disk.len() {
-                            if disk[iii] == -1 {
-                                availsize += 1;
-                            }
-                            else {
-                                break;
-                            }
-                            if availsize == filesize
-                            {
-                                for iiii in 0..filesize {
-                                    //println!("movind {} to {}  {} {} {} {}", i + iiii, ii + iiii, filesize, disk[i + filesize - iiii], iiii, availsize);
-                                    disk[ii + iiii] = disk[i + filesize - iiii];
-                                    disk[i + filesize - iiii] = -1;
-
-                                    
-                                }
-                                ii = disk.len() + 1;
-                                iii = disk.len() + 1;
-                                break;
-                            }
-                        }
-                        if availsize == filesize {
+            if curfile != -2 && disk[i] != curfile && filesize != 0 {
+                println!("{} {} {}", disk[i], curfile, filesize);
+                if *movefileattempt.entry(disk[i+1] as u32).or_insert_with(|| false) == false {
+                    *movefileattempt.entry(disk[i+1] as u32).or_insert_with(|| true) = true;
+                    for mut ii in 0..disk.len() {
+                        if i == ii {
+                            //i = disk.len();
                             break;
+                        }
+                        if disk[ii] == -1 {
+                            let mut availsize = 0;
+                            for mut iii in ii..disk.len() {
+                                if disk[iii] == -1 {
+                                    availsize += 1;
+                                }
+                                else {
+                                    break;
+                                }
+                                if availsize == filesize
+                                {
+                                    for iiii in 0..filesize {
+                                        //println!("movind {} to {}  {} {} {} {}", i + iiii, ii + iiii, filesize, disk[i + filesize - iiii], iiii, availsize);
+                                        disk[ii + iiii] = disk[i + filesize - iiii];
+                                        disk[i + filesize - iiii] = -1;
+
+                                        
+                                    }
+                                    //ii = disk.len() + 1;
+                                    //iii = disk.len() + 1;
+                                    break;
+                                }
+                            }
+                            if availsize == filesize {
+                                break;
+                            }
                         }
                     }
                 }
                 if disk[i] != -1 {
+                    println!("--{}", disk[i]);
                     filesize = 1;
                     curfile = disk[i]; 
                 }
                 else {
+                    println!("---{}", disk[i]);
                     filesize = 0;
+                    curfile = -1;
                 }
             }
             else {
-                if disk[i] != -1 {
-                filesize += 1;
+                if disk[i] != -1 && curfile == disk[i] {
+                    filesize += 1;
                 }
             }
         //}
