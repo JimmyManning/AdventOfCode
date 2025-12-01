@@ -3,7 +3,7 @@ use std::io::Read;
 use std::collections::HashMap;
 
 fn traverse_digit(mut grid : Vec<Vec<char>>, start : char, end : char, path : Vec<char>) -> Vec<char> {
-    return path;
+    if 
 }
 
 fn main() -> std::io::Result<()> {
